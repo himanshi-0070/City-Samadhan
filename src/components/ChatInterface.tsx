@@ -18,8 +18,23 @@ const MessageContainer = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1),
   marginBottom: theme.spacing(1),
   overflowY: 'auto',
-  height: 'calc(100vh - 200px)',
+  height: 'calc(100vh - 140px)',
   padding: theme.spacing(2),
+  '&::-webkit-scrollbar': {
+    width: '4px',
+    background: 'transparent',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: theme.palette.divider,
+    borderRadius: '4px',
+    '&:hover': {
+      background: theme.palette.action.hover,
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: 'calc(100vh - 120px)',
+    padding: theme.spacing(1),
+  },
 }));
 
 const Message = styled(Paper, {
@@ -33,6 +48,12 @@ const Message = styled(Paper, {
   borderRadius: theme.spacing(2),
   boxShadow: theme.shadows[1],
   whiteSpace: 'pre-wrap',
+  wordBreak: 'break-word',
+  [theme.breakpoints.down('sm')]: {
+    maxWidth: '85%',
+    padding: theme.spacing(1, 1.5),
+    fontSize: '0.9rem',
+  },
 }));
 
 const InputContainer = styled(Box)(({ theme }) => ({
@@ -43,6 +64,10 @@ const InputContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
   backgroundColor: theme.palette.background.default,
   borderTop: `1px solid ${theme.palette.divider}`,
+  backdropFilter: 'blur(10px)',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1.5),
+  },
 }));
 
 interface ChatMessage {
@@ -139,11 +164,27 @@ const ChatInterface: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ height: '100vh', position: 'relative' }}>
+    <Container 
+      maxWidth="md" 
+      sx={{ 
+        height: '100vh', 
+        position: 'relative',
+        padding: { xs: 0, sm: 2 },
+        overflow: 'hidden'
+      }}
+    >
       <MessageContainer>
         {messages.map((message, index) => (
           <Message key={index} isUser={message.isUser}>
-            <Typography variant="body1">{message.text}</Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: 1.5 
+              }}
+            >
+              {message.text}
+            </Typography>
           </Message>
         ))}
         <div ref={messagesEndRef} />
@@ -158,10 +199,12 @@ const ChatInterface: React.FC = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
+            size="small"
             sx={{
               '& .MuiOutlinedInput-root': {
                 backgroundColor: theme.palette.background.paper,
                 borderRadius: theme.shape.borderRadius,
+                fontSize: { xs: '0.9rem', sm: '1rem' },
               }
             }}
           />
